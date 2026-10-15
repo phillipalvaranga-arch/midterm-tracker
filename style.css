@@ -16,3 +16,5 @@ table{border-collapse:collapse;width:100%;font-size:13.5px}th,td{padding:6px 8px
 .tw{overflow-x:auto}.legend span{display:inline-block;width:12px;height:12px;border-radius:3px;margin:0 4px -1px 10px}
 .note{border-left:3px solid var(--a);background:#e0b84a12;padding:10px 12px;border-radius:6px;margin:10px 0;font-size:14px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.tabs a{padding:5px 10px;border:1px solid var(--l);border-radius:8px;text-decoration:none;color:var(--f)}.tabs a.on{border-color:var(--a);color:var(--a)}
+
+.win{color:#4ade80;font-weight:700}.lose{color:#fca5a5;font-weight:600}.win a,.lose a{color:inherit;text-decoration:underline dotted}
