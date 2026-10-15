@@ -1,0 +1,18 @@
+name: Refresh data
+on:
+  schedule: [{cron: '15 11 * * *'}]   # daily 11:15 UTC (6:15 AM CT)
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  refresh:
+    if: github.event_name == 'workflow_dispatch' || github.run_started_at < '2026-11-05'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - run: pip install pandas lxml beautifulsoup4 html5lib
+      - run: python pipeline/build_data.py
+      - run: |
+          git config user.name "midterm-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          git add data/data.json; git diff --cached --quiet || (git commit -m "Daily data refresh" && git push)

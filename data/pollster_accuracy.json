@@ -1,0 +1,189 @@
+{
+ "method": "Final head-to-head national poll per pollster ending Oct 20 - Election Day each year; absolute error of D-R margin vs certified popular-vote margin; pollsters must appear in all three years; ranked by mean absolute error.",
+ "actual": {
+  "2016": 2.1,
+  "2020": 4.5,
+  "2024": -1.5
+ },
+ "ranking": [
+  {
+   "key": "ibd/tipp",
+   "name": "IBD/TIPP",
+   "years": {
+    "2016": {
+     "final_poll_end": "2016-11-06",
+     "poll_D_minus_R": 1.0,
+     "actual_D_minus_R": 2.1,
+     "abs_error": 1.1
+    },
+    "2020": {
+     "final_poll_end": "2020-11-02",
+     "poll_D_minus_R": 4.0,
+     "actual_D_minus_R": 4.5,
+     "abs_error": 0.5
+    },
+    "2024": {
+     "final_poll_end": "2024-11-04",
+     "poll_D_minus_R": -0.3,
+     "actual_D_minus_R": -1.5,
+     "abs_error": 1.2
+    }
+   },
+   "mean_abs_error": 0.93,
+   "within_2_all_years": true,
+   "right_winner_all_years": true,
+   "qualifies": true
+  },
+  {
+   "key": "rasmussen",
+   "name": "Rasmussen Reports",
+   "years": {
+    "2016": {
+     "final_poll_end": "2016-11-06",
+     "poll_D_minus_R": 2.0,
+     "actual_D_minus_R": 2.1,
+     "abs_error": 0.1
+    },
+    "2020": {
+     "final_poll_end": "2020-11-01",
+     "poll_D_minus_R": 1.0,
+     "actual_D_minus_R": 4.5,
+     "abs_error": 3.5
+    },
+    "2024": {
+     "final_poll_end": "2024-10-28",
+     "poll_D_minus_R": -2.0,
+     "actual_D_minus_R": -1.5,
+     "abs_error": 0.5
+    }
+   },
+   "mean_abs_error": 1.37,
+   "within_2_all_years": false,
+   "right_winner_all_years": true,
+   "qualifies": false
+  },
+  {
+   "key": "morning consult",
+   "name": "Politico/Morning Consult",
+   "years": {
+    "2016": {
+     "final_poll_end": "2016-11-05",
+     "poll_D_minus_R": 3.0,
+     "actual_D_minus_R": 2.1,
+     "abs_error": 0.9
+    },
+    "2020": {
+     "final_poll_end": "2020-10-31",
+     "poll_D_minus_R": 8.0,
+     "actual_D_minus_R": 4.5,
+     "abs_error": 3.5
+    },
+    "2024": {
+     "final_poll_end": "2024-10-31",
+     "poll_D_minus_R": 2.0,
+     "actual_D_minus_R": -1.5,
+     "abs_error": 3.5
+    }
+   },
+   "mean_abs_error": 2.63,
+   "within_2_all_years": false,
+   "right_winner_all_years": false,
+   "qualifies": false
+  },
+  {
+   "key": "ipsos",
+   "name": "Ipsos/Reuters",
+   "years": {
+    "2016": {
+     "final_poll_end": "2016-11-06",
+     "poll_D_minus_R": 5.0,
+     "actual_D_minus_R": 2.1,
+     "abs_error": 2.9
+    },
+    "2020": {
+     "final_poll_end": "2020-11-02",
+     "poll_D_minus_R": 7.0,
+     "actual_D_minus_R": 4.5,
+     "abs_error": 2.5
+    },
+    "2024": {
+     "final_poll_end": "2024-11-03",
+     "poll_D_minus_R": 2.0,
+     "actual_D_minus_R": -1.5,
+     "abs_error": 3.5
+    }
+   },
+   "mean_abs_error": 2.97,
+   "within_2_all_years": false,
+   "right_winner_all_years": false,
+   "qualifies": false
+  },
+  {
+   "key": "yougov",
+   "name": "YouGov/The Economist",
+   "years": {
+    "2016": {
+     "final_poll_end": "2016-11-07",
+     "poll_D_minus_R": 4.0,
+     "actual_D_minus_R": 2.1,
+     "abs_error": 1.9
+    },
+    "2020": {
+     "final_poll_end": "2020-11-02",
+     "poll_D_minus_R": 10.0,
+     "actual_D_minus_R": 4.5,
+     "abs_error": 5.5
+    },
+    "2024": {
+     "final_poll_end": "2024-10-29",
+     "poll_D_minus_R": 2.0,
+     "actual_D_minus_R": -1.5,
+     "abs_error": 3.5
+    }
+   },
+   "mean_abs_error": 3.63,
+   "within_2_all_years": false,
+   "right_winner_all_years": false,
+   "qualifies": false
+  },
+  {
+   "key": "nbc/wsj",
+   "name": "NBC News/SurveyMonkey",
+   "years": {
+    "2016": {
+     "final_poll_end": "2016-11-06",
+     "poll_D_minus_R": 7.0,
+     "actual_D_minus_R": 2.1,
+     "abs_error": 4.9
+    },
+    "2020": {
+     "final_poll_end": "2020-11-01",
+     "poll_D_minus_R": 10.0,
+     "actual_D_minus_R": 4.5,
+     "abs_error": 5.5
+    },
+    "2024": {
+     "final_poll_end": "2024-11-02",
+     "poll_D_minus_R": 0.0,
+     "actual_D_minus_R": -1.5,
+     "abs_error": 1.5
+    }
+   },
+   "mean_abs_error": 3.97,
+   "within_2_all_years": false,
+   "right_winner_all_years": false,
+   "qualifies": false
+  }
+ ],
+ "rule": "Included only if the final national poll was within 2.0 points of the certified popular-vote margin in each of 2016, 2020 and 2024 AND showed the popular-vote winner ahead in each year.",
+ "sources": {
+  "2016": "https://en.wikipedia.org/wiki/Nationwide_opinion_polling_for_the_2016_United_States_presidential_election",
+  "2020": "https://en.wikipedia.org/wiki/Nationwide_opinion_polling_for_the_2020_United_States_presidential_election",
+  "2024": "https://en.wikipedia.org/wiki/Nationwide_opinion_polling_for_the_2024_United_States_presidential_election"
+ },
+ "actual_sources": {
+  "2016": "https://www.fec.gov/resources/cms-content/documents/federalelections2016.pdf",
+  "2020": "https://www.fec.gov/resources/cms-content/documents/federalelections2020.pdf",
+  "2024": "https://en.wikipedia.org/wiki/2024_United_States_presidential_election"
+ }
+}
