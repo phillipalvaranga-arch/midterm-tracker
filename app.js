@@ -4,7 +4,7 @@ const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 const L=(v,u,t)=>`<a href="${u}" target="_blank" rel="noopener" title="${esc(t||'Source')}">${v}</a>`;
 const M=(v)=>`<a href="#/method" title="Model output: see Method">${v}</a>`;
 const mg=m=>m==null?'n/a':m===0?'Even':(m>0?'D+':'R+')+Math.abs(m).toFixed(1);
-const pct=p=>p>=.995?'>99%':p<=.005?'<1%':(100*p).toFixed(0)+'%';
+const pct=p=>(p=Math.round(p*1000)/1000)>=.995?'>99%':p<=.005?'<1%':(100*p).toFixed(0)+'%';
 function col(p){if(p==null)return'#262c38';const t=Math.min(1,Math.abs(p-.5)*2),g=[138,143,153],c=p>.5?[59,111,214]:[214,59,59];return`rgb(${g.map((x,i)=>Math.round(x+(c[i]-x)*t)).join(',')})`}
 const fav=r=>{const m=r.model;if(!m)return'No model inputs';const pd=m.p_dem,p=Math.max(pd,1-pd);return `${pd>=.5?'<b class=D>Dem</b>':'<b class=R>Rep</b>'} ${M(pct(p))} · ${M(m.confidence)} confidence`};
 function names(r){const o={};if(r.nominees){o.D=r.nominees.D;o.R=r.nominees.R}
