@@ -118,3 +118,34 @@ function race(id){const r=D.races.find(x=>x.id===id);if(!r)return'Not found';con
 function search(v){v=v.trim().toLowerCase();if(!v)return;const st=D.races.find(r=>r.state.toLowerCase()===v||r.state_name.toLowerCase()===v);if(st)return location.hash='#/state/'+st.state;
  const t=v.replace(/^tx-?/,'texas ').replace(/\s+/g,' ');const hits=D.races.filter(r=>(r.name+' '+r.id+' '+r.incumbent).toLowerCase().includes(v)||r.name.toLowerCase().includes(t)).slice(0,60);
  app.innerHTML=`<h1>Results for “${esc(v)}”</h1>${cards(hits)}`}
+/* ---- v6 overall prediction (data from pipeline/summary.py, recomputed every daily refresh) ---- */
+const PN={D:'Democrats',R:'Republicans'};
+function pline(w,dN,rN,unit){const o=w==='D'?'R':'D',n={D:dN,R:rN};
+ if(!w)return `<div class="pv"><span class="D">${PN.D} ${dN}</span> · <span class="R">${PN.R} ${rN}</span></div><div class="sm muted">${unit}</div>`;
+ return `<div class="pv"><span class="win">${PN[w]} ${n[w]}</span> · <span class="lose">${PN[o]} ${n[o]}</span></div><div class="sm muted">${unit}</div>`}
+function bucketLine(b,label){return `<div class="sm">Undecided ${label}: <b>${b.close}</b> too close (leader under ${Math.round(100*D.summary.toss_threshold)}%) · <b>${b.nodata}</b> no data${b.close_races.length&&b.close_races.length<=8?` <span class="muted">(${esc(b.close_races.join(', '))})</span>`:''}</div>`}
+function ctrlLine(c,k){const w=c.leader;if(!w)return `<div class="big">${k} control: tied</div>`;const o=w==='D'?'R':'D',t=!c.likely;
+ return `<div class="big"><span class="win">${t?`Slight edge for ${k} control: ${PN[w]} (toss-up)`:`Likely to control the ${k}: ${PN[w]}`}</span></div><div class="sm"><span class="win">${PN[w]} ${pct(c.probability)}</span> · <span class="lose">${PN[o]} ${pct(1-c.probability)}</span> chance of control · <b>${c.confidence}</b> confidence</div>`}
+function overall(){const S=D.summary;if(!S)return'';const s=S.senate,h=S.house,g=S.governor;
+ const sw=s.control.leader,hw=h.control.leader;
+ const sR=c=>`80% range: Democrats ${c.range80_dem[0]}–${c.range80_dem[1]}, Republicans ${c.range80_rep[0]}–${c.range80_rep[1]} · most likely result Democrats ${c.median_dem}, Republicans ${c.median_rep}`;
+ const gT=g.projected_D_total!=null,gd=gT?g.projected_D_total:g.races.D,gr=gT?g.projected_R_total:g.races.R,gw=gd>gr?'D':gr>gd?'R':null;
+ const gLead=Math.abs(gd-gr),gU=g.races.close+g.races.nodata;
+ return `<section class="card ov"><h2>Overall prediction</h2><div class="muted sm">Based on all ${D.races.length} races in this app · updated ${new Date(S.generated_utc).toLocaleDateString('en-US',{timeZone:'America/Chicago',weekday:'long',month:'short',day:'numeric'})}</div>
+ <div class="ovg"><div class="ovc"><h3>Senate</h3>${ctrlLine(s.control,'Senate')}${pline(sw,s.projected_D,s.projected_R,'projected seats of 100 · 51 needed')}
+  <div class="sm muted">${s.tiebreak}</div><div class="sm">Seats not up: Democratic caucus ${s.holdover_D}, Republicans ${s.holdover_R}. Projected wins of the ${s.seats_up} races: Democrats ${s.races.D}, Republicans ${s.races.R}.</div>${bucketLine(s.races,'Senate races')}<div class="sm muted">${sR(s.control)}</div><a class="go" href="#/senate">See ${s.seats_up} Senate races ›</a></div>
+ <div class="ovc"><h3>House</h3>${ctrlLine(h.control,'House')}${pline(hw,h.projected_D,h.projected_R,'projected seats of 435 · 218 needed')}
+  ${bucketLine(h.races,'House races')}<div class="sm">${(()=>{const L2=h.control.leader||(h.projected_D>=h.projected_R?'D':'R'),n=L2==='D'?h.projected_D:h.projected_R;return n>=218?`${PN[L2]} reach 218 without any undecided race.`:`Neither party reaches 218 from projected seats alone; ${PN[L2]} need ${218-n} of the ${h.races.close+h.races.nodata} undecided races.`})()}</div><div class="sm muted">${sR(h.control)}</div><a class="go" href="#/house">See all 435 House races ›</a></div>
+ <div class="ovc"><h3>Governors</h3>${gw?`<div class="big"><span class="win">Projected majority of governorships: ${PN[gw]}</span></div>`:'<div class="big">Projected governorships: tied</div>'}${pline(gw,gd,gr,gT?'projected governorships of 50':`projected wins of ${g.races_total} races`)}
+  ${gT?`<div class="sm">Not up in 2026: Democrats ${g.holdover.D}, Republicans ${g.holdover.R}${g.holdover.other?`, other ${g.holdover.other}`:''}. Projected wins of the ${g.races_total} races: Democrats ${g.races.D}, Republicans ${g.races.R}.</div>`:''}${bucketLine(g.races,'governor races')}
+  <div class="sm"><b>${gU>=gLead?'Low':'Medium'}</b> confidence: lead of ${gLead} ${gU>=gLead?'is not larger than':'is larger than'} the ${gU} undecided race${gU===1?'':'s'}.</div><a class="go" href="#/governor">See ${g.races_total} governor races ›</a></div></div>
+ <details><summary>How this was calculated</summary><ul class="sm">
+ <li>Each race uses the app's same formula for both parties: expert ratings, polls only from pollsters meeting the accuracy rule (${esc(D.top_pollsters.join(', ')||'none')}), past results, and early-vote returns. See <a href="#/method">Method</a>.</li>
+ <li>A race counts for a party when that party's chance is ${Math.round(100*S.toss_threshold)}% or more. Under ${Math.round(100*S.toss_threshold)}% = "too close". A race with no inputs = "no data"; it is never guessed. This update: ${S.close_total} too close, ${S.nodata_total} with no data.</li>
+ <li>Projected seats = seats not up for election + races counted for each party. Undecided races are not given to either party.</li>
+ <li>Chance of control and the 80% range come from ${s.control.sims.toLocaleString()} simulations of every race (including the too-close ones), with a shared national error. Confidence: High = 90%+, Medium = 70–89%, Low = 55–69%, under 55% = Toss-up.</li>
+ <li>Governors have no simulation; confidence compares the lead to the number of undecided races.</li>
+ <li>Estimates, not results. Updated automatically every morning with the rest of the data.</li></ul>
+ <div class="sm">Sources: ${S.sources.map(([t,u])=>u.startsWith('#')?`<a href="${u}">${esc(t)}</a>`:L(esc(t),u)).join(' · ')}</div>${S.gaps.length?`<div class="sm muted">${S.gaps.map(esc).join(' ')}</div>`:''}</details></section>`}
+const _homeV4=home;
+home=function(q){let h=_homeV4(q);const c=countdown();const a=h.indexOf('<div class="big3">'),b=h.indexOf('<details class="card help">');if(D.summary&&a>=0&&b>a)h=h.slice(0,a)+h.slice(b);return h.startsWith(c)?c+overall()+h.slice(c.length):overall()+h};

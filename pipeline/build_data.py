@@ -246,3 +246,4 @@ data={'generated_utc':now.isoformat(),'election_day':'2026-11-03','generic_ballo
 json.dump(data,open(os.path.join(OUT,'data.json'),'w'),separators=(',',':'),default=lambda o:None)
 print('races',len(races),{k:sum(1 for r in races if r['kind']==k) for k in ('senate','governor','house')},'with polls',sum(1 for r in races if r.get('poll_avg') is not None))
 print('senate',senate);print('house',house);print('GB',GB,'gaps',gaps)
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)));import summary;summary.run()  # overall prediction (same data, recomputed every refresh)

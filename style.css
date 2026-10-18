@@ -33,3 +33,6 @@ nav.bottom{display:none}
 @media(max-width:1024px){nav.top{display:none}nav.bottom{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:9;background:#10141ef7;border-top:1px solid var(--l);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
  nav.bottom a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--f);text-decoration:none;font-size:22px;min-height:48px;justify-content:center}nav.bottom a span{font-size:12px;font-weight:600;color:var(--m)}
  body{padding-bottom:80px}header{position:static}}
+.ov{border:2px solid #e0b84a88;padding:16px 18px}.ov h2{margin:0;font-size:26px}.ovg{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));margin:12px 0 6px}
+.ovc{background:#1d2433;border:1px solid var(--l);border-radius:12px;padding:12px 14px}.ovc h3{margin:0 0 6px;font-size:22px}.ovc>div{margin:4px 0}
+.pv{font-size:24px;font-weight:800;margin:6px 0!important}.ov ul{padding-left:20px}.ov li{margin:5px 0}
