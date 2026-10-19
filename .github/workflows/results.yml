@@ -1,0 +1,30 @@
+name: Live results backup
+# Backup copy of the live-results feed for election night and the following weeks.
+# The app normally reads Fox News directly every 30 s; this snapshot is used only if that fails.
+# GitHub cron is best-effort (runs can be late or skipped), so this is a fallback, not the main path.
+on:
+  schedule:
+    - cron: '*/10 * 3-30 11 *'   # every 10 min, Nov 3-30 (UTC)
+    - cron: '*/10 * 1-15 12 *'   # every 10 min, Dec 1-15 (possible Georgia runoff Dec 1)
+  workflow_dispatch:
+permissions: {contents: write}
+concurrency: {group: results-backup, cancel-in-progress: false}
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - id: window
+        # scheduled runs start Nov 3 at 5 PM CT (23:00 UTC); manual runs always allowed
+        run: if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$(date -u +%Y%m%d%H)" -ge 2026110323 ]; then echo "go=1" >> "$GITHUB_OUTPUT"; fi
+      - if: steps.window.outputs.go == '1'
+        uses: actions/checkout@v4
+      - if: steps.window.outputs.go == '1'
+        uses: actions/setup-python@v5
+        with: {python-version: '3.12'}
+      - if: steps.window.outputs.go == '1'
+        run: python pipeline/results_snapshot.py
+      - if: steps.window.outputs.go == '1'
+        run: |
+          git config user.name "midterm-tracker-bot"; git config user.email "actions@users.noreply.github.com"
+          git add data/results.json; git diff --cached --quiet || (git commit -m "Live results backup snapshot" && for i in 1 2 3; do git pull --rebase && git push && break; sleep 5; done)
