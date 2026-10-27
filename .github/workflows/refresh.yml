@@ -1,6 +1,6 @@
 name: Refresh data
 on:
-  schedule: [{cron: '15 11 * * *'}]   # daily 11:15 UTC (6:15 AM CT)
+  schedule: [{cron: '15 11 * * *'}, {cron: '15 17 * * *'}, {cron: '15 23 * * *'}]   # 6:15 AM, 12:15 PM, 6:15 PM CT during early voting
   workflow_dispatch:
 permissions: {contents: write}
 jobs:

@@ -1,0 +1,282 @@
+{
+"_source": "UF Election Lab 2024 final early vote (election.lab.ufl.edu/data-downloads/earlyvote/2024/US.csv), downloaded 2026-10-27",
+"states": {
+"AK": {
+"voted_all": 89545,
+"last_update": "10/31/2024"
+},
+"AZ": {
+"voted_all": 2338279,
+"last_update": "11/3/2024",
+"dem": 758342,
+"rep": 954306,
+"none": 625631
+},
+"AR": {
+"voted_all": 866061,
+"last_update": "11/5/2024",
+"dem": 46748,
+"rep": 82059,
+"none": 737254
+},
+"CA": {
+"voted_all": 8058584,
+"last_update": "11/3/2024",
+"dem": 3425960,
+"rep": 2105359,
+"none": 1522962
+},
+"CO": {
+"voted_all": 2477070,
+"last_update": "11/5/2024",
+"dem": 706145,
+"rep": 663506,
+"none": 1107419
+},
+"CT": {
+"voted_all": 866387,
+"last_update": "11/5/2024",
+"dem": 357896,
+"rep": 189104,
+"none": 319387
+},
+"DE": {
+"voted_all": 246435,
+"last_update": "11/5/2024",
+"dem": 113537,
+"rep": 81206,
+"none": 51692
+},
+"DC": {
+"voted_all": 213570,
+"last_update": "11/3/2024"
+},
+"FL": {
+"voted_all": 9137249,
+"last_update": "11/5/2024",
+"dem": 2732314,
+"rep": 3570065,
+"none": 1986506
+},
+"GA": {
+"voted_all": 4031303,
+"last_update": "11/5/2024"
+},
+"HI": {
+"voted_all": 331614,
+"last_update": "10/26/2024"
+},
+"ID": {
+"voted_all": 377597,
+"last_update": "11/5/2024",
+"dem": 55281,
+"rep": 237525,
+"none": 84791
+},
+"IL": {
+"voted_all": 2384887,
+"last_update": "11/4/2024"
+},
+"IN": {
+"voted_all": 1579419,
+"last_update": "11/5/2024"
+},
+"IA": {
+"voted_all": 626457,
+"last_update": "11/4/2024",
+"dem": 241732,
+"rep": 248489,
+"none": 136236
+},
+"KS": {
+"voted_all": 653056,
+"last_update": "11/4/2024",
+"dem": 210857,
+"rep": 330519,
+"none": 111680
+},
+"KY": {
+"voted_all": 789971,
+"last_update": "11/3/2024",
+"dem": 327830,
+"rep": 405729,
+"none": 56412
+},
+"LA": {
+"voted_all": 969362,
+"last_update": "11/4/2024",
+"dem": 349162,
+"rep": 433392,
+"none": 186808
+},
+"ME": {
+"voted_all": 360129,
+"last_update": "11/4/2024",
+"dem": 150525,
+"rep": 100279,
+"none": 109325
+},
+"MD": {
+"voted_all": 1609278,
+"last_update": "11/3/2024",
+"dem": 925718,
+"rep": 411917,
+"none": 271643
+},
+"MA": {
+"voted_all": 1740448,
+"last_update": "11/5/2024"
+},
+"MI": {
+"voted_all": 3319560,
+"last_update": "11/5/2024"
+},
+"MN": {
+"voted_all": 1174224,
+"last_update": "11/4/2024"
+},
+"MS": {
+"voted_all": 208886,
+"last_update": "11/4/2024"
+},
+"MO": {
+"voted_all": 303843,
+"last_update": "11/1/2024"
+},
+"MT": {
+"voted_all": 431636,
+"last_update": "11/4/2023"
+},
+"NE": {
+"voted_all": 364260,
+"last_update": "11/5/2024",
+"dem": 121555,
+"rep": 178755,
+"none": 63946
+},
+"NV": {
+"voted_all": 1099333,
+"last_update": "11/4/2024",
+"dem": 370818,
+"rep": 412764,
+"none": 315751
+},
+"NJ": {
+"voted_all": 3128736,
+"last_update": "11/4/2024",
+"dem": 1293476,
+"rep": 960651,
+"none": 874609
+},
+"NM": {
+"voted_all": 668859,
+"last_update": "11/5/2024",
+"dem": 309937,
+"rep": 244582,
+"none": 114340
+},
+"NY": {
+"voted_all": 2985181,
+"last_update": "11/3/2024"
+},
+"NC": {
+"voted_all": 4481606,
+"last_update": "11/5/2024",
+"dem": 1451660,
+"rep": 1488826,
+"none": 1541120
+},
+"ND": {
+"voted_all": 187564,
+"last_update": "11/4/2024"
+},
+"OK": {
+"voted_all": 392982,
+"last_update": "11/4/2024",
+"dem": 110295,
+"rep": 232429,
+"none": 50258
+},
+"OH": {
+"voted_all": 2532260,
+"last_update": "11/4/2024"
+},
+"OR": {
+"voted_all": 1723085,
+"last_update": "11/5/2024",
+"dem": 676703,
+"rep": 527255,
+"none": 519127
+},
+"PA": {
+"voted_all": 1786931,
+"last_update": "11/5/2024",
+"dem": 995674,
+"rep": 586764,
+"none": 204493
+},
+"RI": {
+"voted_all": 190151,
+"last_update": "11/2/2024",
+"dem": 80674,
+"rep": 28221,
+"none": 81256
+},
+"SC": {
+"voted_all": 1574326,
+"last_update": "11/4/2024"
+},
+"SD": {
+"voted_all": 141554,
+"last_update": "10/25/2024",
+"dem": 18498,
+"rep": 77517,
+"none": 45539
+},
+"TN": {
+"voted_all": 2214863,
+"last_update": "10/31/2024"
+},
+"TX": {
+"voted_all": 9059437,
+"last_update": "11/5/2024"
+},
+"UT": {
+"voted_all": 943058,
+"last_update": "11/5/2024",
+"dem": 144495,
+"rep": 542679,
+"none": 255884
+},
+"VT": {
+"voted_all": 234868,
+"last_update": "11/5/2024"
+},
+"VA": {
+"voted_all": 2305439,
+"last_update": "11/4/2024"
+},
+"WA": {
+"voted_all": 2754974,
+"last_update": "11/4/2024"
+},
+"WV": {
+"voted_all": 332081,
+"last_update": "11/3/2024",
+"dem": 101472,
+"rep": 151547,
+"none": 79062
+},
+"WI": {
+"voted_all": 1540288,
+"last_update": "11/5/2024"
+},
+"WY": {
+"voted_all": 76993,
+"last_update": "11/5/2024",
+"dem": 10820,
+"rep": 58215,
+"none": 7958
+}
+}
+}
