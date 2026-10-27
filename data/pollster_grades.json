@@ -1,18 +1,154 @@
-{"rule":"Kept only if, in 2024 general-election polls scored against certified results, average margin error was 2.1 points or less, over at least 10 polls, and the poll leader won at least 85% of the time.",
-"sources":{"pollingsource_2024":"https://pollingsource.com/pollsters/2024","silver_2024_review":"https://www.natesilver.net/p/so-how-did-the-polls-do-in-2024-its","coefficient":"https://pollingsource.com/pollsters/co-efficient"},
-"pollsters":[
-{"key":"atlasintel","name":"AtlasIntel","pat":"atlas","polls":66,"err":1.4,"lean":"D+0.5","winner":92,"grade":"A+","note":"Silver Bulletin rates A+, No. 1 (2025)"},
-{"key":"trafalgar","name":"Trafalgar Group","pat":"trafalgar","polls":39,"err":1.8,"lean":"D+1.5","winner":89,"grade":"A"},
-{"key":"insideradvantage","name":"InsiderAdvantage","pat":"insideradvantage|insider advantage","polls":41,"err":1.9,"lean":"D+1.2","winner":94,"grade":"A"},
-{"key":"ppp","name":"Public Policy Polling","pat":"public policy polling|\\bppp\\b","polls":10,"err":2.0,"lean":"D+0.3","winner":89,"grade":"A-","note":"Democratic-affiliated firm"},
-{"key":"rasmussen","name":"Rasmussen Reports","pat":"rasmussen","polls":63,"err":2.1,"lean":"R+0.4","winner":92,"grade":"A-"},
-{"key":"fox","name":"Fox News (Beacon/Shaw)","pat":"fox news","polls":24,"err":2.3,"lean":"D+1.9","winner":68,"grade":"B"},
-{"key":"suffolk","name":"Suffolk University","pat":"suffolk","polls":12,"err":2.4,"lean":"D+2.3","winner":50,"grade":"B"},
-{"key":"tipp","name":"TIPP Insights","pat":"tipp","polls":16,"err":2.5,"lean":"D+2.5","winner":33,"grade":"B"},
-{"key":"emerson","name":"Emerson College","pat":"emerson","polls":88,"err":2.7,"lean":"D+1.8","winner":82,"grade":"B"},
-{"key":"quinnipiac","name":"Quinnipiac","pat":"quinnipiac","polls":21,"err":3.0,"lean":"D+1.9","winner":50,"grade":"C"},
-{"key":"siena","name":"NYT/Siena","pat":"siena","polls":53,"err":3.1,"lean":"D+2.5","winner":57,"grade":"C"},
-{"key":"marist","name":"Marist","pat":"marist","polls":20,"err":4.3,"lean":"D+4.3","winner":47,"grade":"D"},
-{"key":"uh","name":"University of Houston","pat":"university of houston|hobby school","polls":3,"err":6.0,"lean":"D+6.0","winner":100,"grade":"D"},
-{"key":"coefficient","name":"co/efficient","pat":"co/efficient|coefficient","polls":2,"err":0.6,"lean":"D+0.3","winner":100,"grade":"Too few polls","note":"Only 2 polls in 2024; 6.2-pt error (R+6.1) over 14 polls in 2022"}
-]}
+{
+"rule": "Top 3 only: the three pollsters with the lowest 2024 average margin error (1.9 points or less) among those with at least 10 scored polls whose poll leader won at least 85% of the time.",
+"sources": {
+"pollingsource_2024": "https://pollingsource.com/pollsters/2024",
+"silver_2024_review": "https://www.natesilver.net/p/so-how-did-the-polls-do-in-2024-its",
+"coefficient": "https://pollingsource.com/pollsters/co-efficient"
+},
+"pollsters": [
+{
+"key": "atlasintel",
+"name": "AtlasIntel",
+"pat": "atlas",
+"polls": 66,
+"err": 1.4,
+"lean": "D+0.5",
+"winner": 92,
+"grade": "A+",
+"note": "Silver Bulletin rates A+, No. 1 (2025)"
+},
+{
+"key": "trafalgar",
+"name": "Trafalgar Group",
+"pat": "trafalgar",
+"polls": 39,
+"err": 1.8,
+"lean": "D+1.5",
+"winner": 89,
+"grade": "A"
+},
+{
+"key": "insideradvantage",
+"name": "InsiderAdvantage",
+"pat": "insideradvantage|insider advantage",
+"polls": 41,
+"err": 1.9,
+"lean": "D+1.2",
+"winner": 94,
+"grade": "A"
+},
+{
+"key": "ppp",
+"name": "Public Policy Polling",
+"pat": "public policy polling|\\bppp\\b",
+"polls": 10,
+"err": 2.0,
+"lean": "D+0.3",
+"winner": 89,
+"grade": "A-",
+"note": "Democratic-affiliated firm; Dropped: outside top 3"
+},
+{
+"key": "rasmussen",
+"name": "Rasmussen Reports",
+"pat": "rasmussen",
+"polls": 63,
+"err": 2.1,
+"lean": "R+0.4",
+"winner": 92,
+"grade": "A-",
+"note": "Dropped: outside top 3"
+},
+{
+"key": "fox",
+"name": "Fox News (Beacon/Shaw)",
+"pat": "fox news",
+"polls": 24,
+"err": 2.3,
+"lean": "D+1.9",
+"winner": 68,
+"grade": "B"
+},
+{
+"key": "suffolk",
+"name": "Suffolk University",
+"pat": "suffolk",
+"polls": 12,
+"err": 2.4,
+"lean": "D+2.3",
+"winner": 50,
+"grade": "B"
+},
+{
+"key": "tipp",
+"name": "TIPP Insights",
+"pat": "tipp",
+"polls": 16,
+"err": 2.5,
+"lean": "D+2.5",
+"winner": 33,
+"grade": "B"
+},
+{
+"key": "emerson",
+"name": "Emerson College",
+"pat": "emerson",
+"polls": 88,
+"err": 2.7,
+"lean": "D+1.8",
+"winner": 82,
+"grade": "B"
+},
+{
+"key": "quinnipiac",
+"name": "Quinnipiac",
+"pat": "quinnipiac",
+"polls": 21,
+"err": 3.0,
+"lean": "D+1.9",
+"winner": 50,
+"grade": "C"
+},
+{
+"key": "siena",
+"name": "NYT/Siena",
+"pat": "siena",
+"polls": 53,
+"err": 3.1,
+"lean": "D+2.5",
+"winner": 57,
+"grade": "C"
+},
+{
+"key": "marist",
+"name": "Marist",
+"pat": "marist",
+"polls": 20,
+"err": 4.3,
+"lean": "D+4.3",
+"winner": 47,
+"grade": "D"
+},
+{
+"key": "uh",
+"name": "University of Houston",
+"pat": "university of houston|hobby school",
+"polls": 3,
+"err": 6.0,
+"lean": "D+6.0",
+"winner": 100,
+"grade": "D"
+},
+{
+"key": "coefficient",
+"name": "co/efficient",
+"pat": "co/efficient|coefficient",
+"polls": 2,
+"err": 0.6,
+"lean": "D+0.3",
+"winner": 100,
+"grade": "Too few polls",
+"note": "Only 2 polls in 2024; 6.2-pt error (R+6.1) over 14 polls in 2022"
+}
+]
+}
