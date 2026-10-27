@@ -38,9 +38,10 @@ def pvi_val(s):
   m=re.match(r'([DR])\+(\d+)',s);return (int(m.group(2))*(1 if m.group(1)=='D' else -1)) if m else None
 gaps=[];now=datetime.datetime.now(datetime.timezone.utc)
 acc=json.load(open(os.path.join(OUT,'pollster_accuracy.json')))
-TOP=[r for r in acc['ranking'] if r.get('qualifies')]
+GR=json.load(open(os.path.join(OUT,'pollster_grades.json')))
+TOP=[r for r in GR['pollsters'] if r['err']<=2.1 and r['polls']>=10 and r['winner']>=85]  # top-accuracy rule, see data/pollster_grades.json
 if len(TOP)<3: gaps.append(f'Only {len(TOP)} pollster(s) met the accuracy rule; no other pollsters are used.')
-TOPPAT={'ibd/tipp':r'tipp|\bibd\b','rasmussen':r'rasmussen reports','morning consult':r'morning consult','ipsos':r'ipsos','yougov':r'yougov'}
+TOPPAT={r['key']:r['pat'] for r in TOP};_OLD={'ibd/tipp':r'tipp|\bibd\b','rasmussen':r'rasmussen reports','morning consult':r'morning consult','ipsos':r'ipsos','yougov':r'yougov'}
 def top_key(src):
   s=clean(src).lower()
   for r in TOP:
