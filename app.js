@@ -158,3 +158,13 @@ function keyRaces(){if(!D||!D.races)return'';const top=k=>D.races.filter(r=>r.ki
  <h3>House</h3><p class="sm">218 seats needed for a majority. These 5 are the closest:</p><ol>${top('house').map(li).join('')}</ol>
  <p class="sm muted">Closest = model win chance nearest 50/50; updates with each daily data refresh. See <a href="#/method">Method</a>.</p></div>`}
 const _homeV7=home;home=function(q){const h=_homeV7(q),k=keyRaces(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):k+h};
+/* ---- v9 Early voting card (UF Election Lab data, refreshed with each data update) ---- */
+function earlyCard(){const E=D&&D.early_vote;if(!E)return'';const v=Object.values(E),n=x=>Number(x).toLocaleString();
+ const tot=v.reduce((a,e)=>a+(e.voted_all||0),0),pv=v.filter(e=>e.dem!=null),pd=pv.reduce((a,e)=>a+e.dem,0),pr=pv.reduce((a,e)=>a+e.rep,0),pn=pv.reduce((a,e)=>a+e.none,0),pt=pd+pr+pn||1;
+ const ks=['TX','ME','MI','AK','IA','OH','KS','CA','WI','PA','NY','AZ'].filter(s=>E[s]);
+ const rw=s=>{const e=E[s],t=e.turnout_2022?` (${Math.round(100*e.voted_all/e.turnout_2022)}% of 2022 total)`:'';return `<tr><td><a href="#/state/${s}">${s}</a></td><td>${n(e.voted_all)}${t}</td><td>${e.dem!=null?`D ${Math.round(100*e.dem/e.voted_all)}% · R ${Math.round(100*e.rep/e.voted_all)}% · Other ${Math.round(100*e.none/e.voted_all)}%`:'<span class=muted>no party data</span>'}</td><td class=muted>${esc(e.last_update||'')}</td></tr>`};
+ return `<div class="card"><h2 style="margin-top:0">Early voting so far</h2><div class="big">${n(tot)} votes cast</div>
+ <div class="sm">In ${v.length} reporting states. Where voters register by party (${pv.length} states, ${n(pd+pr+pn)} votes): Democrats ${Math.round(100*pd/pt)}%, Republicans ${Math.round(100*pr/pt)}%, other/none ${Math.round(100*pn/pt)}%. Party registration is not a vote count.</div>
+ <div class="tw"><table><tr><th>State</th><th>Votes cast</th><th>Party registration of voters</th><th>As of</th></tr>${ks.map(rw).join('')}</table></div>
+ <div class="sm muted">Source: ${L('University of Florida Election Lab','https://election.lab.ufl.edu/early-vote/')} (from state election offices). Texas has no party registration. Collin County: ${L('Texas SOS early voting by county','https://goelect.txelections.civixapps.com/ivis-evr-ui/evr')}.</div></div>`}
+const _homeV8=home;home=function(q){const h=_homeV8(q),k=earlyCard(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):h+k};
