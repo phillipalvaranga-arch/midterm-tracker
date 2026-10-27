@@ -149,3 +149,12 @@ function overall(){const S=D.summary;if(!S)return'';const s=S.senate,h=S.house,g
  <div class="sm">Sources: ${S.sources.map(([t,u])=>u.startsWith('#')?`<a href="${u}">${esc(t)}</a>`:L(esc(t),u)).join(' · ')}</div>${S.gaps.length?`<div class="sm muted">${S.gaps.map(esc).join(' ')}</div>`:''}</details></section>`}
 const _homeV4=home;
 home=function(q){let h=_homeV4(q);const c=countdown();const a=h.indexOf('<div class="big3">'),b=h.indexOf('<details class="card help">');if(D.summary&&a>=0&&b>a)h=h.slice(0,a)+h.slice(b);return h.startsWith(c)?c+overall()+h.slice(c.length):overall()+h};
+/* ---- v8 Key races: the 5 closest Senate and House races (model), recomputed from each daily data refresh ---- */
+function keyRaces(){if(!D||!D.races)return'';const top=k=>D.races.filter(r=>r.kind===k&&r.model).sort((a,b)=>Math.abs(a.model.p_dem-.5)-Math.abs(b.model.p_dem-.5)).slice(0,5);
+ const li=r=>{const pr=1-r.model.p_dem,c=r.ratings.Cook_label;return `<li><a href="#/race/${r.id}">${esc(r.name)}</a> <span class="muted">(${esc(r.incumbent)})</span> · GOP win chance ${M(pct(pr))}${c?` · Cook: ${esc(c.replace(' (not on rated-competitive list)',''))}`:''}</li>`};
+ const s=D.senate,needR=50-s.holdover_rep;
+ return `<div class="card"><h2 style="margin-top:0">Key races for Republican control</h2>
+ <h3>Senate</h3><p class="sm">Republicans need 50 seats (VP Vance breaks ties). ${s.holdover_rep} GOP seats are not up, so they need ${needR} of the ${s.seats_up} races. These 5 are the closest:</p><ol>${top('senate').map(li).join('')}</ol>
+ <h3>House</h3><p class="sm">218 seats needed for a majority. These 5 are the closest:</p><ol>${top('house').map(li).join('')}</ol>
+ <p class="sm muted">Closest = model win chance nearest 50/50; updates with each daily data refresh. See <a href="#/method">Method</a>.</p></div>`}
+const _homeV7=home;home=function(q){const h=_homeV7(q),k=keyRaces(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):k+h};
