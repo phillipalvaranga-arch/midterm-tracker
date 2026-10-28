@@ -142,11 +142,14 @@ def poll_avg(pr):
   if not pr or not pr['polls']: return None
   v,b=atlas_avg(pr['polls']);pr['basis']=b;return v
 def phi(x): return 0.5*(1+math.erf(x/math.sqrt(2)))
+# Poll error correction: AAPOR signed error (polls overstated Dem margin), all offices, final 2 weeks:
+# 2016 +3.1, 2020 +4.6, 2024 +2.7 (AAPOR 2024 task force report). Default = presidential-cycle average 3.5 pts.
+POLL_CORR_CYCLES={'2016':3.1,'2020':4.6,'2024':2.7};POLL_CORR=round(sum(POLL_CORR_CYCLES.values())/3,1);CORR_ON=True
 def model(r,kind):
   inp={};parts=[]
   rv=[r['ratings'].get(k) for k in ('Cook','Inside Elections','Sabato') if r['ratings'].get(k) is not None]
   if rv: inp['rating']=round(sum(rv)/len(rv),1);parts.append(('rating',inp['rating'],0.35))
-  if r.get('poll_avg') is not None: inp['polls']=r['poll_avg'];parts.append(('polls',r['poll_avg'],0.35))
+  if r.get('poll_avg') is not None: inp['polls']=round(r['poll_avg']-(POLL_CORR if CORR_ON else 0),1);parts.append(('polls',inp['polls'],0.35))
   b=[]
   if kind=='house':
     if r.get('pvi') is not None: b.append(2*r['pvi']+(GB or 0.0))
@@ -235,6 +238,7 @@ with cf.ThreadPoolExecutor(2) as ex:
   for r,pr in zip(todo,ex.map(lambda r:race_polls(r['page']),todo)):
     r['poll_data']=pr;r['poll_avg']=poll_avg(pr)
     if pr: r['nominees']={'D':pr['D'],'R':pr['R']}
+CORR_ON=False
 for r in races: r['model']=model(r,r['kind'])
 def sim(kind,hold_d,need,n=20000):
   rs=[r for r in races if r['kind']==kind and r['model']];random.seed(42);wins=0;tot=[]
@@ -247,8 +251,18 @@ def sim(kind,hold_d,need,n=20000):
 sen=[r for r in races if r['kind']=='senate'];up_dem_caucus=sum(1 for r in sen if r['inc_party'] in('D','I'))
 senate=sim('senate',47-up_dem_caucus,51);senate.update(seats_up=len(sen),holdover_dem_caucus=47-up_dem_caucus,holdover_rep=53-(len(sen)-up_dem_caucus),total=100,median_rep_seats=100-senate['median_dem_seats'])
 house=sim('house',0,218);house.update(total=435,median_rep_seats=435-house['median_dem_seats'])
+_u={'senate':senate,'house':house}
+CORR_ON=True
+for r in races: r['model']=model(r,r['kind'])
+senate=sim('senate',47-up_dem_caucus,51);senate.update(seats_up=len(sen),holdover_dem_caucus=47-up_dem_caucus,holdover_rep=53-(len(sen)-up_dem_caucus),total=100,median_rep_seats=100-senate['median_dem_seats'])
+house=sim('house',0,218);house.update(total=435,median_rep_seats=435-house['median_dem_seats'])
+poll_correction={'on':True,'pts_toward_R':POLL_CORR,'cycles':POLL_CORR_CYCLES,'midterms':{'2018':0.1,'2022':-0.6},
+ 'races_with_polls':sum(1 for r in races if r.get('poll_avg') is not None),
+ 'uncorrected':{k:{'p_rep':v['p_rep_control'],'median_rep':v['median_rep_seats']} for k,v in _u.items()},
+ 'corrected':{k:{'p_rep':v['p_rep_control'],'median_rep':v['median_rep_seats']} for k,v in (('senate',senate),('house',house))},
+ 'source':'https://aapor.org/wp-content/uploads/2025/10/AAPOR-Task-Force-on-2024-Pre-Election-Polling_Report.pdf'}
 data={'generated_utc':now.isoformat(),'election_day':'2026-11-03','generic_ballot':gb,'generic_ballot_used':GB,'env':ENV,'pres24':p24,'early_vote':ev,
- 'rating_dates':{'senate':SEN_RD,'governor':GOV_RD,'house':HOUSE_RD},'pollster_accuracy':acc,'top_pollsters':[r['name'] for r in TOP],'senate':senate,'house':house,'races':races,'gaps':gaps}
+ 'rating_dates':{'senate':SEN_RD,'governor':GOV_RD,'house':HOUSE_RD},'pollster_accuracy':acc,'top_pollsters':[r['name'] for r in TOP],'senate':senate,'house':house,'poll_correction':poll_correction,'races':races,'gaps':gaps}
 json.dump(data,open(os.path.join(OUT,'data.json'),'w'),separators=(',',':'),default=lambda o:None)
 print('races',len(races),{k:sum(1 for r in races if r['kind']==k) for k in ('senate','governor','house')},'with polls',sum(1 for r in races if r.get('poll_avg') is not None))
 print('senate',senate);print('house',house);print('GB',GB,'gaps',gaps)
