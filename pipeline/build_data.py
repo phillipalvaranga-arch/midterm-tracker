@@ -47,6 +47,15 @@ def top_key(src):
   for r in TOP:
     if re.search(TOPPAT.get(r['key'],re.escape(r['key'])),s): return r['key']
   return None
+def _rec(ps):
+  ps=ps[:4];w=[0.85**i for i in range(len(ps))];return sum(p['margin']*wi for p,wi in zip(ps,w))/sum(w)
+def atlas_avg(ps):
+  """AtlasIntel is the foundation: 60% AtlasIntel (recency-weighted), 40% Trafalgar+InsiderAdvantage; others only if no AtlasIntel poll."""
+  a=[p for p in ps if p.get('top')=='atlasintel'];o=[p for p in ps if p.get('top')!='atlasintel']
+  if a and o: return round(0.6*_rec(a)+0.4*_rec(o),1),'AtlasIntel-based'
+  if a: return round(_rec(a),1),'AtlasIntel only'
+  if o: return round(_rec(o),1),'Fallback (no AtlasIntel poll)'
+  return None,None
 # generic ballot
 GBURL='https://www.realclearpolling.com/polls/state-of-the-union/generic-congressional-vote'
 gb={'polls':[],'source':GBURL}
@@ -57,8 +66,7 @@ try:
     gb['polls'].append({'pollster':p,'dates':clean(r['date']),'sample':clean(r['sample']),'D':d,'R':rr,'margin':round(d-rr,1),'top':top_key(p)})
   a=[x for x in gb['polls'] if x['pollster'].startswith('RCP Average')];gb['rcp_average']=a[0]['margin'] if a else None
   gb['polls']=[x for x in gb['polls'] if x['top']]  # only rule-qualifying pollsters are kept
-  ind=gb['polls'][:5]
-  gb['weighted_average']=round(sum(x['margin'] for x in ind)/len(ind),1) if ind else None
+  gb['weighted_average'],gb['basis']=atlas_avg(gb['polls'])
 except Exception as e: gaps.append(f'Generic ballot (RealClearPolling) fetch failed: {e}')
 GB=gb.get('weighted_average')
 WGB=None
@@ -131,11 +139,8 @@ def race_polls(page):
   agg=None  # aggregator averages include non-qualifying pollsters; not used
   return {'aggregate':agg,'polls':[p for p in polls if p['top'] and '2026' in p['dates']],'all_polls_in_table':len(polls),'D':dn,'R':rn}
 def poll_avg(pr):
-  if not pr: return None
-  ps=pr['polls'][:4]
-  if not ps: return None
-  w=[0.85**i for i in range(len(ps))]
-  return round(sum(p['margin']*wi for p,wi in zip(ps,w))/sum(w),1)
+  if not pr or not pr['polls']: return None
+  v,b=atlas_avg(pr['polls']);pr['basis']=b;return v
 def phi(x): return 0.5*(1+math.erf(x/math.sqrt(2)))
 def model(r,kind):
   inp={};parts=[]
