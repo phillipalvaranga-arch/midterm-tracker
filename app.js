@@ -171,6 +171,7 @@ function earlyCard(){const E=D&&D.early_vote;if(!E)return'';const v=Object.value
 const _homeV8=home;home=function(q){const h=_homeV8(q),k=earlyCard(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):h+k};
 /* ---- v10 Early vote vs previous elections (static 2024 baselines in data/ev_baselines.json) ---- */
 let EB=null;fetch('data/ev_baselines.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{EB=j.states;if(D)route()}).catch(()=>{});
+var vd=(g,gb)=>g==null||gb==null?'<span class=muted>No party data</span>':Math.abs(g-gb)<0.05?'Even with 2024':(g>gb?'<b style="color:#2563eb">Democrats doing better than 2024</b>':'<b style="color:#dc2626">Republicans doing better than 2024</b>');
 function evCompare(){const E=D&&D.early_vote;if(!E||!EB)return'';const n=x=>Number(x).toLocaleString(),pc=(a,b)=>b?`${a>=b?'+':''}${Math.round(100*(a-b)/b)}%`:'–';
  const both=Object.keys(E).filter(s=>EB[s]);const t26=both.reduce((a,s)=>a+E[s].voted_all,0),t24=both.reduce((a,s)=>a+EB[s].voted_all,0),t22=both.reduce((a,s)=>a+(E[s].turnout_2022||0),0);
  const gap=(e)=>e&&e.dem!=null&&e.voted_all?100*(e.dem-e.rep)/e.voted_all:null,fg=g=>g==null?'–':(g>=0?'D+':'R+')+Math.abs(g).toFixed(1);
