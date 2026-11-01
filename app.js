@@ -203,3 +203,23 @@ function pcCard(){const c=D&&D.poll_correction;if(!c)return'';const p=x=>Math.ro
  <tr><td>House</td><td>${p(u.house.p_rep)} (median ${u.house.median_rep} R)</td><td><b>${p(k.house.p_rep)}</b> (median ${k.house.median_rep} R)</td></tr></table></div>
  <div class="sm muted">Caution: in midterms AAPOR found almost no bias. 2018: Democrats overstated by 0.1; 2022: Republicans overstated by 0.6. House odds barely move because almost no House races have polls from the top 3. Source: ${L('AAPOR 2024 Pre-Election Polling Task Force report','https://aapor.org/wp-content/uploads/2025/10/AAPOR-Task-Force-on-2024-Pre-Election-Polling_Report.pdf')}; ${L('AAPOR 2020 report','https://aapor.org/wp-content/uploads/2022/11/AAPOR-Task-Force-on-2020-Pre-Election-Polling_Report-FNL.pdf')}.</div></div>`}
 const _homeV14=home;home=function(q){const h=_homeV14(q),k=pcCard(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):h+k};
+/* ---- v16 Early vote by age (UF Election Lab + Census CPS) ---- */
+let EA=null;fetch('data/ev_age.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{EA=j;if(D)route()}).catch(()=>{});
+function ageCard(){if(!EA)return'';const u=EA.uf,c=EA.cps,s=EA.src,n=x=>Number(x).toLocaleString(),B=['18-25','26-40','41-65','Over 65'],cl=['#22c55e','#3b82f6','#a855f7','#f59e0b'];
+ const bars=(lab,p)=>`<div class="sm" style="margin-top:6px"><b>${lab}</b></div><div style="display:flex;height:22px;border-radius:6px;overflow:hidden">${p.map((v,i)=>`<div title="${B[i]} ${v}%" style="width:${v}%;background:${cl[i]};color:#fff;font-size:11px;text-align:center;line-height:22px">${v>=6?v+'%':''}</div>`).join('')}</div>`;
+ const key=`<div class="sm">${B.map((b,i)=>`<span style="color:${cl[i]}">■</span> ${b}`).join(' &nbsp; ')}</div>`;
+ const cy=[2018,2022,2024],r=(k,f)=>cy.map(y=>`<td>${c[y].b[k][f]}%</td>`).join('');
+ return `<div class="card"><h2 style="margin-top:0">Early vote by age</h2>
+ <div class="big" style="font-size:1.1em">${n(u.us26)} early/mail votes cast nationally (${u.nstates26} states reporting) · Texas: ${n(u.tx26)}</div>
+ <div class="sm">As of ${u.dates26.join(' – ')} (Texas as of ${u.tx26_date}). That's ${Math.round(100*u.us26/u.us_turn22)}% of the total 2022 midterm vote in those states; Texas is at ${Math.round(100*u.tx26/u.tx22)}% of its 2022 total. 2024 final early vote: ${n(u.us24)} nationally, ${n(u.tx24)} in Texas. Source: ${L('UF Election Lab','https://election.lab.ufl.edu/2026-general-election-early-vote/')}.</div>
+ <h3>Who has voted early, by age (share of early votes)</h3>${key}
+ ${bars(`2026 so far — same 8 states (${u.com.join(', ')})`,u.com26[0])}
+ ${bars('2024 final early vote — same 8 states',u.com24[0])}
+ ${bars(`2026 so far — all ${u.all26.states.length} states with age data (${n(u.all26.n)} votes)`,u.all26.pct)}
+ <div class="tw"><table><tr><th>Age</th><th>2026 early so far (8 states)</th><th>2024 final early (same 8)</th><th>Change</th></tr>${B.map((b,i)=>`<tr><td>${b}</td><td><b>${u.com26[0][i]}%</b></td><td>${u.com24[0][i]}%</td><td>${(u.com26[0][i]-u.com24[0][i]>=0?'+':'')+(u.com26[0][i]-u.com24[0][i]).toFixed(1)}</td></tr>`).join('')}</table></div>
+ <div class="sm muted">Source: ${L('UF Election Lab 2026 file',s.uf26)} and ${L('2024 file',s.uf24)} (from state election offices). UF age groups are 18-25, 26-40, 41-65, over 65, so 18-29, 30-39 and 40-80 can't be shown for the 2026 early vote. Only states that report voters' ages are included. <b>Texas doesn't publish early voters' ages</b>; its daily totals are at ${L('Texas SOS',s.txsos)}. UF doesn't publish a day-by-day age history, so a "day 3" age breakdown isn't available.</div>
+ <h3>Past elections: all voters by age (Census survey)</h3>
+ <div class="tw"><table><tr><th>Age</th><th>2018 share of voters</th><th>2022</th><th>2024</th><th>2018 turnout rate</th><th>2022</th><th>2024</th></tr>
+ ${['18-29','30-39','40-64','40-79','65+'].map(k=>`<tr><td>${k}</td>${r(k,'share')}${r(k,'rate')}</tr>`).join('')}</table></div>
+ <div class="sm muted">Turnout rate = share of U.S. citizens that age who said they voted. These count <b>all</b> voters (early and Election Day), not only early voters, and are survey estimates. 40-79 is shown because Census groups ages 80-84 together. Source: U.S. Census Bureau CPS Voting Supplement, Table 1: ${L('2018',s.cps2018)}, ${L('2022',s.cps2022)}, ${L('2024',s.cps2024)}. Early votes tell who is voting, not how they voted.</div></div>`}
+const _homeV15=home;home=function(q){const h=_homeV15(q),k=ageCard(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):h+k};
