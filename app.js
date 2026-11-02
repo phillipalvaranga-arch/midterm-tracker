@@ -15,7 +15,7 @@ function outcome(r,inline){const m=r.model;if(!m)return'<span class=muted>No mod
  const nm=k=>`${esc(n[k]||(k==='D'?'Democratic':'Republican')+' candidate')} (${k==='D'?'Democratic':'Republican'})`,t=pw<.55?' (toss-up)':'';
  return `<span class="win">Likely to win: ${nm(w)}, ${M(pct(pw))}${t}</span>${inline?'<br>':' · '}<span class="lose">Likely to lose: ${nm(l)}, ${M(pct(1-pw))}</span>`}
 const ratingURL=r=>W+(r.rating_page||r.list_page);
-async function load(){D=await (await fetch('data/data.json',{cache:'no-cache'})).json();
+async function load(){D=await (await fetch('data/data.json?t='+Date.now(),{cache:'no-store'})).json();
  const t=new Date(D.generated_utc).toLocaleString('en-US',{timeZone:'America/Chicago',dateStyle:'medium',timeStyle:'short'});
  const days=Math.ceil((new Date('2026-11-03T06:00:00-06:00')-Date.now())/864e5);
  document.getElementById('upd').innerHTML=`Last updated: ${t} CT · ${days>0?days+' days until Election Day':'Election Day'}`;route()}
@@ -205,7 +205,7 @@ function pcCard(){const c=D&&D.poll_correction;if(!c)return'';const p=x=>Math.ro
  <div class="sm muted">Caution: in midterms AAPOR found almost no bias. 2018: Democrats overstated by 0.1; 2022: Republicans overstated by 0.6. House odds barely move because almost no House races have polls from the top 3. Source: ${L('AAPOR 2024 Pre-Election Polling Task Force report','https://aapor.org/wp-content/uploads/2025/10/AAPOR-Task-Force-on-2024-Pre-Election-Polling_Report.pdf')}; ${L('AAPOR 2020 report','https://aapor.org/wp-content/uploads/2022/11/AAPOR-Task-Force-on-2020-Pre-Election-Polling_Report-FNL.pdf')}.</div></div>`}
 const _homeV14=home;home=function(q){const h=_homeV14(q),k=pcCard(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):h+k};
 /* ---- v16 Early vote by age (UF Election Lab + Census CPS) ---- */
-let EA=null;fetch('data/ev_age.json',{cache:'no-cache'}).then(r=>r.json()).then(j=>{EA=j;if(D)route()}).catch(()=>{});
+let EA=null;fetch('data/ev_age.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{EA=j;if(D)route()}).catch(()=>{});
 function ageCard(){if(!EA)return'';const u=EA.uf,c=EA.cps,s=EA.src,n=x=>Number(x).toLocaleString(),B=['18-25','26-40','41-65','Over 65'],cl=['#22c55e','#3b82f6','#a855f7','#f59e0b'];
  const bars=(lab,p)=>`<div class="sm" style="margin-top:6px"><b>${lab}</b></div><div style="display:flex;height:22px;border-radius:6px;overflow:hidden">${p.map((v,i)=>`<div title="${B[i]} ${v}%" style="width:${v}%;background:${cl[i]};color:#fff;font-size:11px;text-align:center;line-height:22px">${v>=6?v+'%':''}</div>`).join('')}</div>`;
  const key=`<div class="sm">${B.map((b,i)=>`<span style="color:${cl[i]}">■</span> ${b}`).join(' &nbsp; ')}</div>`;
@@ -224,3 +224,8 @@ function ageCard(){if(!EA)return'';const u=EA.uf,c=EA.cps,s=EA.src,n=x=>Number(x
  ${['18-29','30-39','40-64','40-79','65+'].map(k=>`<tr><td>${k}</td>${r(k,'share')}${r(k,'rate')}</tr>`).join('')}</table></div>
  <div class="sm muted">Turnout rate = share of U.S. citizens that age who said they voted. These count <b>all</b> voters (early and Election Day), not only early voters, and are survey estimates. 40-79 is shown because Census groups ages 80-84 together. Source: U.S. Census Bureau CPS Voting Supplement, Table 1: ${L('2018',s.cps2018)}, ${L('2022',s.cps2022)}, ${L('2024',s.cps2024)}. Early votes tell who is voting, not how they voted.</div></div>`}
 const _homeV15=home;home=function(q){const h=_homeV15(q),k=ageCard(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):h+k};
+
+/* ---- v18 Hourly auto-refresh while open ---- */
+function refreshAll(){load().catch(()=>{});fetch('data/ev_age.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{EA=j;if(D)route()}).catch(()=>{})}
+let _lastR=Date.now();setInterval(()=>{_lastR=Date.now();refreshAll()},36e5);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-_lastR>10*6e4){_lastR=Date.now();refreshAll()}});
