@@ -229,3 +229,24 @@ const _homeV15=home;home=function(q){const h=_homeV15(q),k=ageCard(),i=h.indexOf
 function refreshAll(){load().catch(()=>{});fetch('data/ev_age.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{EA=j;if(D)route()}).catch(()=>{})}
 let _lastR=Date.now();setInterval(()=>{_lastR=Date.now();refreshAll()},36e5);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-_lastR>10*6e4){_lastR=Date.now();refreshAll()}});
+/* ---- v19 Presidential section ---- */
+let PR=null;fetch('data/presidential.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{PR=j;if(D)route()}).catch(()=>{});
+function presidential(){if(!PR)return'<p class=muted>Loading…</p>';const s=PR.src,Y=['2012','2016','2020','2024'];
+ const yr=y=>{const r=PR.results[y],w=r.winner==='D'?r.D:r.R,st=Object.keys(r.states).sort();
+  return `<div class="card"><h2 style="margin-top:0">${y}: ${esc(w)} won</h2>
+  <div class="bar"><div style="background:var(--d);width:${100*r.evD/538}%">${esc(r.D)} ${r.evD}</div><div style="background:var(--r);width:${100*r.evR/538}%">${esc(r.R)} ${r.evR}</div></div>
+  <div class="sm">Popular vote: ${esc(r.D)} (D) <b>${r.pvD}%</b> · ${esc(r.R)} (R) <b>${r.pvR}%</b> · about ${r.votes_m} million votes · turnout ${r.vep}% of eligible voters. ${esc(r.note)}</div>
+  <details><summary>States won (${st.filter(x=>r.states[x]==='D').length} D, ${st.filter(x=>r.states[x]==='R').length} R, DC counted as a state)</summary><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:3px;margin-top:6px">${st.map(x=>`<div title="${x}: ${r.ev[x]} electoral votes" style="background:${r.states[x]==='D'?'var(--d)':'var(--r)'};color:#fff;text-align:center;border-radius:4px;font-size:12px;padding:3px 0">${x}<br><small>${r.ev[x]}</small></div>`).join('')}</div></details></div>`};
+ const t=PR.top3;
+ return `<h1>Presidential</h1><div class="card"><h2 style="margin-top:0">Past results</h2><div class="tw"><table><tr><th>Year</th><th>Winner</th><th>Electoral votes</th><th>Popular vote</th><th>Turnout</th></tr>${Y.map(y=>{const r=PR.results[y];return `<tr><td>${y}</td><td>${esc(r.winner==='D'?r.D:r.R)} (${r.winner})</td><td>${r.evD} D – ${r.evR} R</td><td>D ${r.pvD}% · R ${r.pvR}%</td><td>${r.vep}%</td></tr>`}).join('')}</table></div>
+ <div class="sm muted">Sources: ${L('FEC official results',s.results)}; turnout = share of eligible voters (${L('UF Election Lab',s.turnout)}). Electoral votes are the official counts.</div></div>
+ ${Y.slice().reverse().map(yr).join('')}
+ <div class="card"><h2 style="margin-top:0">2028 race</h2>
+ <p class="sm">Election Day is Nov 7, 2028. The names below are the people pollsters are asking about. This app hasn't verified who has formally declared.</p>
+ <h3>Pollsters used: the 3 most accurate in 2020 and 2024</h3>
+ <div class="tw"><table><tr><th>Pollster</th><th>2020 final poll error</th><th>2024 final poll error</th><th>Average</th></tr>${t.map(p=>`<tr><td><b>${esc(p.name)}</b></td><td>${p.e20} pts</td><td>${p.e24} pts</td><td>${p.avg} pts</td></tr>`).join('')}</table></div>
+ <div class="sm muted">Error = how far the pollster's final national poll margin was from the actual popular-vote margin (2020 Biden +4.5, 2024 Trump +1.5). Final polls from Oct 20 to Election Day, from ${L('2020',s.w20)} and ${L('2024',s.w24)} national polling lists; ranked among the 12 pollsters with final polls in 2016, 2020 and 2024. Emerson's final 2024 poll was a tie, so it didn't show the winner ahead.</div>
+ <h3>Their 2028 polls (national)</h3>
+ <div class="tw"><table><tr><th>Pollster</th><th>Date</th><th>Race</th><th>Result (%)</th></tr>${PR.polls.map(p=>`<tr><td>${esc(p.p)}</td><td>${esc(p.d)}</td><td>${esc(p.race)}</td><td>${esc(p.r)}</td></tr>`).join('')}</table></div>
+ <div class="sm muted">Polls as listed by ${L('Crosstab (Republican)',s.polls_list)}, ${L('Crosstab (Democratic)',s.polls_list_d)} and ${L('PollCheck (general)',s.emerson_ge)}, as of ${esc(PR.asof)}. Polls this early often change a lot.</div></div>`}
+const _routeV18=route;route=function(){const p=location.hash.slice(1).split('?')[0];if(p==='/president'){if(!D)return;app.innerHTML=presidential();scrollTo(0,0);return}_routeV18()};
