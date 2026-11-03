@@ -225,9 +225,9 @@ function ageCard(){if(!EA)return'';const u=EA.uf,c=EA.cps,s=EA.src,n=x=>Number(x
  <div class="sm muted">Turnout rate = share of U.S. citizens that age who said they voted. These count <b>all</b> voters (early and Election Day), not only early voters, and are survey estimates. 40-79 is shown because Census groups ages 80-84 together. Source: U.S. Census Bureau CPS Voting Supplement, Table 1: ${L('2018',s.cps2018)}, ${L('2022',s.cps2022)}, ${L('2024',s.cps2024)}. Early votes tell who is voting, not how they voted.</div></div>`}
 const _homeV15=home;home=function(q){const h=_homeV15(q),k=ageCard(),i=h.indexOf('<div class="card my">');return i>=0?h.slice(0,i)+k+h.slice(i):h+k};
 
-/* ---- v18 Hourly auto-refresh while open ---- */
+/* ---- v20 15-minute auto-refresh while open ---- */
 function refreshAll(){load().catch(()=>{});fetch('data/ev_age.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{EA=j;if(D)route()}).catch(()=>{})}
-let _lastR=Date.now();setInterval(()=>{_lastR=Date.now();refreshAll()},36e5);
+let _lastR=Date.now();setInterval(()=>{_lastR=Date.now();refreshAll()},9e5);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Date.now()-_lastR>10*6e4){_lastR=Date.now();refreshAll()}});
 /* ---- v19 Presidential section ---- */
 let PR=null;fetch('data/presidential.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{PR=j;if(D)route()}).catch(()=>{});

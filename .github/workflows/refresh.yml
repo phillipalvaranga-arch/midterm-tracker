@@ -1,6 +1,6 @@
 name: Refresh data
 on:
-  schedule: [{cron: '0 * * * *'}]   # every hour (GitHub may run a few minutes late)
+  schedule: [{cron: '*/15 * * * *'}]   # every 15 minutes (GitHub may run a few minutes late)
   workflow_dispatch:
 permissions: {contents: write}
 concurrency: {group: refresh, cancel-in-progress: false}
@@ -25,4 +25,4 @@ jobs:
       - if: steps.window.outputs.go == '1'
         run: |
           git config user.name "midterm-tracker-bot"; git config user.email "actions@users.noreply.github.com"
-          git add data/data.json data/ev_age.json; git diff --cached --quiet || (git commit -m "Hourly data refresh" && git pull --rebase && git push)
+          git add data/data.json data/ev_age.json; git diff --cached --quiet || (git commit -m "15-minute data refresh" && git pull --rebase && git push)
