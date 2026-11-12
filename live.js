@@ -109,10 +109,10 @@ function liveBanner(){const st=!R?'Loading live results…':RS.fail>1?`⚠ Can't
  <div class="lb"><div><span class="livedot"></span><b>${Date.now()<LV.start&&!LV.test?'Results preview (no votes until polls close on Nov 3)':live?'LIVE RESULTS':'Final results'}</b> · Source: ${L('Fox News Decision Desk',LV.src,'Fox News election results')}</div>
  <div class="sm muted">${R?`Source data updated ${ctTime(R.lm)} · checked ${ctClock(RS.checked)}${live?' · refreshes every 30 seconds':''}${R.via?` · <b>Fox News could not be reached directly, so some data comes from the backup copy saved ${RS.snap&&RS.snap.fetched_utc?ctClock(Date.parse(RS.snap.fetched_utc)):''} (updated about every 10 minutes)</b>`:''}`:''}</div>${st?`<div class="sm">${st}</div>`:''}
  <div class="vt"><a class="on">Live results</a><a href="javascript:setView('forecast')">Pre-election forecast</a></div></div>`}
-function resHome(q){if(!R)return liveBanner();const k=q.get('m')||'senate',my=R.races.filter(r=>r.st===MY&&(r.kind!=='house'||MYD.includes(r.id)));
+function resHome(q){if(!R)return liveBanner()+(typeof presTeaser==='function'?presTeaser():'');const k=q.get('m')||'senate',my=R.races.filter(r=>r.st===MY&&(r.kind!=='house'||MYD.includes(r.id)));
  const close=R.races.filter(r=>r.kind!=='house'&&r.status==='counting').sort((a,b)=>(a.margin??99)-(b.margin??99)).slice(0,6);
  const flips=R.races.filter(r=>r.status==='called'&&r.flipped);
- return`${liveBanner()}<section class="card ov"><h2>Seat count</h2><div class="muted sm">Won = race called by the source. Leading = ahead in votes counted so far, not called. Seats not up this year are included.</div>
+ return`${liveBanner()}${typeof presTeaser==='function'?presTeaser():''}<section class="card ov"><h2>Seat count</h2><div class="muted sm">Won = race called by the source. Leading = ahead in votes counted so far, not called. Seats not up this year are included.</div>
  <div class="ovg">${chamberTally('senate')}${chamberTally('house')}${chamberTally('governor')}</div>${legend()}</section>
  <div class="card my"><h2>My State: Texas</h2>${my.length?`<div class="rcs">${my.map(r=>resCard(r)).join('')}</div>`:'<p class="muted">No Texas results yet.</p>'}<a class="go" href="#/state/TX">All Texas results ›</a></div>
  ${close.length?`<h2>Closest Senate & governor races still counting</h2><div class="rcs">${close.map(r=>resCard(r)).join('')}</div>`:''}

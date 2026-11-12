@@ -70,7 +70,12 @@ function method(){return `<h1>Method & sources</h1><div class="card"><p><a href=
 <li><b>Baseline</b> (weight 25%): Senate/Governor = average of the 2024 presidential margin in the state and the seat's last result. House = 2× Cook PVI, plus the 2024 House result where listed. Prior results are shifted by (current generic-ballot margin − national House margin that year: ${Object.entries(D.env).map(([y,v])=>L(y+' '+mg(v),W+y+'_United_States_House_of_Representatives_elections')).join(', ')}) only when a qualifying generic-ballot poll exists. Currently: ${D.generic_ballot_used==null?'none, so no shift is applied':mg(D.generic_ballot_used)}. Last-result margins are derived from the winner's share (2×share−100).</li>
 <li><b>Early vote</b> (weight 5%, statewide races only, once returns reach 5% of 2022 turnout): the change in the party-registration gap of returned ballots vs. the 2024 final early vote (${L('UF Election Lab',UF)}), ×0.25, capped at ±3. A same-point-in-time 2022/2024 comparison is not published in machine-readable form, so the 2024 final figure is used. Early votes are not counted vote choices.</li></ol>
 <p>Win probability = Normal(margin / σ), σ = 6.5 (statewide with polls), 7.5 (House with polls), 8 (no polls). Confidence: High if probability ≥ 90%, inputs within 15 pts and more than one input; Medium if ≥ 70%; otherwise Low. Chamber control: ${D.senate.sims.toLocaleString()} simulations with a shared national error (σ 3) plus race-level error.</p>
-<p>Not used: CNN, MSN, MSNBC. Sources: ${L('Wikipedia election pages (ratings, candidates, polls)',W+'2026_United_States_elections')}, ${L('UF Election Lab early vote',UF)} and state election offices it cites, ${L('RealClearPolling',D.generic_ballot.source)}.</p></div>${gapsBox()}`}
+<p>Not used: CNN, MSN, MSNBC. Sources: ${L('Wikipedia election pages (ratings, candidates, polls)',W+'2026_United_States_elections')}, ${L('UF Election Lab early vote',UF)} and state election offices it cites, ${L('RealClearPolling',D.generic_ballot.source)}.</p></div>
+<div class="card"><h2 style="margin-top:0">Install this app</h2>
+<p>Add <b>USA Elections</b> to your home screen so it opens like an app.</p>
+<p><b>iPhone or iPad (Safari):</b> tap the Share button, then <b>Add to Home Screen</b>, then <b>Add</b>.</p>
+<p><b>Android phone or tablet (Chrome):</b> tap the menu (three dots), then <b>Install app</b> or <b>Add to Home screen</b>.</p>
+</div>${gapsBox()}`}
 function search(v){v=v.trim().toLowerCase();if(!v)return;const st=D.races.find(r=>r.state.toLowerCase()===v||r.state_name.toLowerCase()===v);if(st)return location.hash='#/state/'+st.state;
  const hits=D.races.filter(r=>(r.name+' '+r.id+' '+r.incumbent).toLowerCase().includes(v)).slice(0,60);app.innerHTML=`<h1>Results for “${esc(v)}”</h1><div class=tw><table><tr><th>Race</th><th>Incumbent</th><th>Cook rating</th><th>Model margin</th><th>Model</th></tr>${hits.map(row).join('')||'<tr><td>No matches</td></tr>'}</table></div>`}
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')search(e.target.value)});
@@ -250,3 +255,9 @@ function presidential(){if(!PR)return'<p class=muted>Loading…</p>';const s=PR.
  <div class="tw"><table><tr><th>Pollster</th><th>Date</th><th>Race</th><th>Result (%)</th></tr>${PR.polls.map(p=>`<tr><td>${esc(p.p)}</td><td>${esc(p.d)}</td><td>${esc(p.race)}</td><td>${esc(p.r)}</td></tr>`).join('')}</table></div>
  <div class="sm muted">Polls as listed by ${L('Crosstab (Republican)',s.polls_list)}, ${L('Crosstab (Democratic)',s.polls_list_d)} and ${L('PollCheck (general)',s.emerson_ge)}, as of ${esc(PR.asof)}. Polls this early often change a lot.</div></div>`}
 const _routeV18=route;route=function(){const p=location.hash.slice(1).split('?')[0];if(p==='/president'){if(!D)return;app.innerHTML=presidential();scrollTo(0,0);return}_routeV18()};
+function presTeaser(){const ev=PR&&PR.results&&PR.results['2024'];
+ const p24=ev?`${esc(ev.winner==='R'?ev.R:ev.D)} won the 2024 election ${ev.evR}–${ev.evD}.`:'Past results from 2012, 2016, 2020 and 2024.';
+ const polls=PR&&PR.top3?` Early 2028 polls from ${PR.top3.map(x=>esc(x.name)).join(', ')}${PR.asof?` (as of ${esc(PR.asof)})`:''}.`:' Early 2028 polls from the three most accurate pollsters.';
+ return `<a class="card pres-teaser" href="#/president"><h2>Presidential</h2><div class="sm">${p24}${polls}</div><span class="go">Past results and 2028 polls ›</span></a>`}
+const _homePres=home;home=function(q){const h=_homePres(q),t=presTeaser(),c=countdown();return h.startsWith(c)?c+t+h.slice(c.length):t+h};
+

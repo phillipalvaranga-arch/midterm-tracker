@@ -55,3 +55,4 @@ nav.bottom{display:none}
 .tl{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 8px;margin:4px 0}.tl .tn{font-size:26px;font-weight:800}
 .ovg.one{grid-template-columns:1fr}
 .chips{display:flex;flex-wrap:wrap;gap:6px}.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--l);border-radius:99px;color:var(--f);text-decoration:none;font-size:14px;background:#1d2433}
+a.pres-teaser{display:block;text-decoration:none;color:inherit;border-color:var(--a);margin:12px 0}a.pres-teaser h2{margin:0 0 6px}a.pres-teaser:hover{border-color:#9cc0ff}

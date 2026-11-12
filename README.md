@@ -1,5 +1,5 @@
-# Midterm Tracker 2026
-Installable PWA. Data: pipeline/build_data.py -> data/data.json (daily GitHub Action). Pollster rule: pipeline/pollster_accuracy.py.
+# USA Elections
+Installable PWA (repository remains midterm-tracker). Data: pipeline/build_data.py -> data/data.json (daily GitHub Action). Pollster rule: pipeline/pollster_accuracy.py.
 
 ## Live results (v7)
 `live.js` switches the app to live results on Nov 3, 2026, 6:00 PM CT. It reads the public Fox News election feed
