@@ -81,8 +81,8 @@ function search(v){v=v.trim().toLowerCase();if(!v)return;const st=D.races.find(r
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')search(e.target.value)});
 document.getElementById('q').addEventListener('input',e=>{if(e.target.value.length>=3)search(e.target.value)});
 function route(){if(!D)return;const[p,qs]=location.hash.slice(1).split('?'),q=new URLSearchParams(qs||''),s=(p||'/').split('/').filter(Boolean);
- app.innerHTML=!s.length?home(q):s[0]==='state'?state(s[1]):s[0]==='race'?race(s[1]):s[0]==='pollsters'?pollsters():s[0]==='method'?method():['senate','house','governor'].includes(s[0])?list(s[0],q):home(q);scrollTo(0,0)}
-addEventListener('hashchange',route);load().catch(e=>app.textContent='Could not load data: '+e.message);
+ app.innerHTML=!s.length?home(q):s[0]==='state'?state(s[1]):s[0]==='race'?race(s[1]):s[0]==='president'?presidential():s[0]==='pollsters'?pollsters():s[0]==='method'?method():['senate','house','governor'].includes(s[0])?list(s[0],q):home(q);scrollTo(0,0)}
+addEventListener('hashchange',()=>route());load().catch(e=>app.textContent='Could not load data: '+e.message);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
 /* ---- v4 friendly UI (overrides earlier definitions) ---- */
 const MY='TX',MYD=['H-TX-03','H-TX-04'];
