@@ -81,7 +81,7 @@ function search(v){v=v.trim().toLowerCase();if(!v)return;const st=D.races.find(r
 document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')search(e.target.value)});
 document.getElementById('q').addEventListener('input',e=>{if(e.target.value.length>=3)search(e.target.value)});
 function route(){if(!D)return;const[p,qs]=location.hash.slice(1).split('?'),q=new URLSearchParams(qs||''),s=(p||'/').split('/').filter(Boolean);
- app.innerHTML=!s.length?home(q):s[0]==='state'?state(s[1]):s[0]==='race'?race(s[1]):s[0]==='president'?presidential():s[0]==='pollsters'?pollsters():s[0]==='method'?method():['senate','house','governor'].includes(s[0])?list(s[0],q):home(q);scrollTo(0,0)}
+ app.innerHTML=!s.length?home(q):s[0]==='state'?state(s[1]):s[0]==='race'?race(s[1]):s[0]==='president'?presidential():s[0]==='results'?resultsPage(q):s[0]==='early-vote'?earlyVotePage():s[0]==='forecast'?forecastPage(q):s[0]==='pollsters'||s[0]==='polls'?pollsters():s[0]==='method'?method():['senate','house','governor'].includes(s[0])?list(s[0],q):home(q);scrollTo(0,0)}
 addEventListener('hashchange',()=>route());load().catch(e=>app.textContent='Could not load data: '+e.message);
 if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
 /* ---- v4 friendly UI (overrides earlier definitions) ---- */
@@ -260,4 +260,40 @@ function presTeaser(){const ev=PR&&PR.results&&PR.results['2024'];
  const polls=PR&&PR.top3?` Early 2028 polls from ${PR.top3.map(x=>esc(x.name)).join(', ')}${PR.asof?` (as of ${esc(PR.asof)})`:''}.`:' Early 2028 polls from the three most accurate pollsters.';
  return `<a class="card pres-teaser" href="#/president"><h2>Presidential</h2><div class="sm">${p24}${polls}</div><span class="go">Past results and 2028 polls ›</span></a>`}
 const _homePres=home;home=function(q){const h=_homePres(q),t=presTeaser(),c=countdown();return h.startsWith(c)?c+t+h.slice(c.length):t+h};
-
+function resultsPage(q){return backHome()+'<p class=muted>Loading results…</p>'}
+function backHome(){return `<p class="back"><a href="#/">← Home</a></p>`}
+function opt(href,icon,name,sub){return `<a class="opt" href="${href}"><span class="opt-ic" aria-hidden="true">${icon}</span><span class="opt-txt"><b>${esc(name)}</b><span class="sm muted">${sub}</span></span></a>`}
+function dashHome(){const live=typeof resultsMode==='function'&&resultsMode();
+ const tiles=live?[
+  opt('#/president','🇺🇸','Presidential','Past results and 2028 polls'),
+  opt('#/results','📊','Seat count','Called seats, control, and the results map'),
+  opt('#/senate','🏛','Senate','Race results and calls'),
+  opt('#/house','🏢','House','All 435 House results'),
+  opt('#/governor','⭐','Governors','Governor results'),
+  opt('#/state/TX','📍','Texas','Results in my state'),
+  opt('#/early-vote','🗳','Early vote','Ballots returned by state, party, and age'),
+  opt('#/pollsters','📈','Polls','Pollster accuracy and which polls are used'),
+  opt('#/forecast','🔮','Forecast','Pre-election model, for comparison'),
+  opt('#/method','ℹ️','Method & sources','How the model works, and how to install this app')
+ ]:[
+  opt('#/president','🇺🇸','Presidential','Past results and 2028 polls'),
+  opt('#/senate','🏛','Senate','Races and the model'),
+  opt('#/house','🏢','House','All 435 House races'),
+  opt('#/governor','⭐','Governors','Governor races'),
+  opt('#/state/TX','📍','Texas','Races in my state'),
+  opt('#/early-vote','🗳','Early vote','Ballots returned by state, party, and age'),
+  opt('#/pollsters','📈','Polls','Pollster accuracy and which polls are used'),
+  opt('#/forecast','🔮','Forecast','Overall prediction and key races'),
+  opt('#/method','ℹ️','Method & sources','How the model works, and how to install this app')
+ ];
+ const head=live?(typeof liveBanner==='function'?liveBanner():''):(typeof preNote==='function'?preNote():'')+(typeof countdown==='function'?countdown():'');
+ return `${head}<h1>USA Elections</h1><p class="muted">Choose a section. Details open when you tap an option.</p><div class="opts">${tiles.join('')}</div>`}
+function earlyVotePage(){return backHome()+`<h1>Early vote</h1>`+(typeof earlyCard==='function'?earlyCard():'')+(typeof evCompare==='function'?evCompare():'')+(typeof ageCard==='function'?ageCard():'')+(typeof gapsBox==='function'?gapsBox():'')}
+function forecastPage(q){const k=(q&&q.get('m'))||'senate';const live=typeof resultsMode==='function'&&resultsMode();
+ const banner=live&&typeof liveBanner==='function'?liveBanner():'';
+ const mapTabs=`<h2>Map</h2><div class="tabs">${[['senate','Senate'],['governor','Governor'],['house','House']].map(([a,b])=>`<a class="${k===a?'on':''}" href="#/forecast?m=${a}">${b}</a>`).join('')}</div>${typeof map==='function'?map(k):''}`;
+ return `${banner}${backHome()}<h1>Forecast</h1>${live?'<p class="muted">Pre-election model, for comparison with live results.</p>':''}${typeof overall==='function'?overall():''}${typeof keyRaces==='function'?keyRaces():''}${typeof pcCard==='function'?pcCard():''}${typeof help==='function'?help():''}${mapTabs}`}
+home=function(q){return dashHome(q)};
+const _presDash=presidential;presidential=function(){return backHome()+_presDash()};
+const _polDash=pollsters;pollsters=function(){return backHome()+_polDash()};
+const _methDash=method;method=function(){return backHome()+_methDash()};

@@ -135,9 +135,20 @@ function resList(kind,q){if(!R)return liveBanner();const f=q.get('f')||'all';let
  <div class="tabs">${[['all','All'],['counting','Still counting'],['called','Called'],['waiting','No votes yet'],['runoff','Runoff']].filter(([a])=>a==='all'||n[a]).map(([a,b])=>`<a class="${f===a?'on':''}" href="#/${kind}?f=${a}">${b} (${n[a]})</a>`).join('')}</div>
  <p class="muted sm">Still-counting races first, closest at the top.</p><div class="rcs">${show.map(r=>resCard(r)).join('')||'<p class="muted">None.</p>'}</div>`}
 function resState(s){const rs=R?R.races.filter(r=>r.st===s):[];if(!rs.length)return'';return`<h2>Results</h2>${['senate','governor','house'].map(k=>{const x=rs.filter(r=>r.kind===k);return x.length?`<h3>${kindName[k]}</h3><div class="rcs">${x.map(r=>resCard(r)).join('')}</div>`:''}).join('')}`}
+
+function resultsPage(q){if(typeof resultsMode==='function'&&!resultsMode())return forecastPage(q);
+ if(!R)return backHome()+(typeof liveBanner==='function'?liveBanner():'')+'<p class=muted>Loading live results…</p>';
+ const k=q.get('m')||'senate',my=R.races.filter(r=>r.st===MY&&(r.kind!=='house'||MYD.includes(r.id)));
+ const close=R.races.filter(r=>r.kind!=='house'&&r.status==='counting').sort((a,b)=>(a.margin??99)-(b.margin??99)).slice(0,6);
+ const flips=R.races.filter(r=>r.status==='called'&&r.flipped);
+ return`${backHome()}${liveBanner()}<section class="card ov"><h2>Seat count</h2><div class="muted sm">Won = race called by the source. Leading = ahead in votes counted so far, not called. Seats not up this year are included.</div>
+ <div class="ovg">${chamberTally('senate')}${chamberTally('house')}${chamberTally('governor')}</div>${legend()}</section>
+ ${close.length?`<h2>Closest Senate & governor races still counting</h2><div class="rcs">${close.map(r=>resCard(r)).join('')}</div>`:''}
+ ${flips.length?`<div class="card"><h2 style="margin-top:0">Seats that changed party (${flips.length})</h2><div class="chips">${flips.map(r=>`<a href="#/race/${r.id}" class="chip"><span class="dot ${r.winner.p}"></span>${esc(r.name)}${r.app?.inc_party&&r.app.inc_party!==r.winner.p?` · ${r.app.inc_party}→${r.winner.p}`:''}</a>`).join('')}</div><div class="sm muted">Flip status as reported by the source.</div></div>`:''}
+ <h2>Results map</h2><div class="tabs">${[['senate','Senate'],['governor','Governor'],['house','House']].map(([a,b])=>`<a class="${k===a?'on':''}" href="#/results?m=${a}">${b}</a>`).join('')}</div>${resMap(k)}`}
 /* ---------- hooking into the existing app ---------- */
 const _homeF=home,_listF=list,_stateF=state,_raceF=race,_loadF=load;
-home=function(q){if(!resultsMode()){const h=_homeF(q),c=countdown();return h.startsWith(c)?c+preNote()+h.slice(c.length):preNote()+h}return resHome(q)};
+home=function(q){return dashHome(q)};
 const _methodF=method;method=function(){return _methodF()+`<div class="card"><h2 style="margin-top:0">Live results (election night and after)</h2><ul class="sm">
 <li>From Tuesday, Nov 3, 2026 at 6:00 PM CT the app shows live results instead of the forecast. You can switch back to the forecast at any time.</li>
 <li>Source: the ${L('Fox News',LV.src)} election-results data feed (Fox News Decision Desk). Vote counts, % of expected vote counted, and race calls are shown exactly as the source publishes them.</li>
@@ -146,19 +157,19 @@ const _methodF=method;method=function(){return _methodF()+`<div class="card"><h2
 <li>Seat totals = seats not up in 2026 plus races the source has called. The 2 independents not up (King, Sanders) caucus with Democrats and are counted with them. Majority: Senate 51 (Republicans control at 50 because the Vice President breaks ties), House 218.</li>
 <li>Runoffs: when no candidate wins a majority (e.g. Georgia), the source marks the top two as advancing, and the race is not counted for either party until the runoff is called.</li>
 <li>Results are unofficial until each state certifies them.</li></ul></div>`};
-list=function(k,q){return resultsMode()?resList(k,q):_listF(k,q)};
-state=function(s){if(!resultsMode())return _stateF(s);const n=ST[s]||s;return`${liveBanner()}<h1>${esc(n)}</h1>${resState(s)||'<p class="muted">No results for this state yet.</p>'}<details class="card"><summary>Pre-election forecast for ${esc(n)}</summary>${_stateF(s)}</details>`};
+list=function(k,q){return backHome()+(resultsMode()?resList(k,q):_listF(k,q))};
+state=function(s){if(!resultsMode())return backHome()+_stateF(s);const n=ST[s]||s;return`${backHome()}${liveBanner()}<h1>${esc(n)}</h1>${resState(s)||'<p class="muted">No results for this state yet.</p>'}<details class="card"><summary>Pre-election forecast for ${esc(n)}</summary>${_stateF(s)}</details>`};
 race=function(id){if(!resultsMode())return _raceF(id);const r=R?.races.find(x=>x.id===id);
  const ro=r&&r.status==='runoff'?`<div id="ro" class="card muted sm">Checking for runoff results…</div>`:'';
  if(r&&r.status==='runoff')setTimeout(async()=>{const x=await runoffFor(r),el=document.getElementById('ro');if(!el)return;
   el.innerHTML=x&&x.tot?`<h3>Runoff results</h3>${x.res.map(c=>`<div class="cr ${c.win?'cw':''}"><div class="cn"><span class="dot ${c.p}"></span><b>${esc(c.name)}</b> (${esc(c.party)}) ${c.win?'<span class="badge w">WINNER</span>':''}</div><div class="cv"><span>${nf(c.votes)} votes</span><b>${c.pct.toFixed(1)}%</b></div></div>`).join('')}<div class="sm muted">Summed from the source's county results · updated ${ctTime(x.lm)}</div>`:'No runoff results published by the source yet.'},0);
  const fc=D.races.find(x=>x.id===id)?_raceF(id):'';
- return`${liveBanner()}${r?`<p><a href="#/state/${r.st}">← ${esc(ST[r.st]||r.st)}</a></p><h1>${esc(r.name)}</h1>${resCard(r,true)}${ro}`:'<p class="muted">No live results for this race from the source.</p>'}${fc?`<details class="card"><summary>Pre-election forecast for this race</summary>${fc}</details>`:''}`};
+ return`${backHome()}${liveBanner()}${r?`<p><a href="#/state/${r.st}">← ${esc(ST[r.st]||r.st)}</a></p><h1>${esc(r.name)}</h1>${resCard(r,true)}${ro}`:'<p class="muted">No live results for this race from the source.</p>'}${fc?`<details class="card"><summary>Pre-election forecast for this race</summary>${fc}</details>`:''}`};
 function preNote(){if(LV.force==='0')return'';if(Date.now()>=LV.start||LV.test)return`<div class="note"><b>Live results are available.</b> <a href="javascript:setView('results')">Switch to live results ›</a></div>`;return`<div class="note">Live results: on <b>Tuesday, Nov 3 at 6:00 PM CT</b> this app switches automatically to live vote counts and race calls from Fox News, updating every 30 seconds. <a href="javascript:setView('results')">Preview the results page</a> (no votes yet).</div>`}
 function rerender(){if(!D)return;const op=[...app.querySelectorAll('details')].map(d=>d.open),y=scrollY;const sv=scrollTo;window.scrollTo=()=>{};try{route()}finally{window.scrollTo=sv}
  app.querySelectorAll('details').forEach((d,i)=>{if(op[i])d.open=true});window.scrollTo(0,y)}
 /* switch automatically at 6 PM CT on Nov 3 even if the app is left open */
 const _route=route,FT=document.querySelector('footer'),FT0=FT?FT.innerHTML:'';
-route=function(){const rm=resultsMode();if(rm&&!R)liveStart();_route();const U=document.getElementById('upd');if(U)U.style.display=rm?'none':'';if(FT)FT.innerHTML=rm?`Live results from ${L('Fox News',LV.src)} (Fox News Decision Desk). A race is marked WINNER only after the source calls it. Vote counts are unofficial until certified by each state. Not used: CNN, MSN, MSNBC.`:FT0};
+route=function(){const rm=resultsMode();if(rm&&!R)liveStart();_route();const U=document.getElementById('upd');if(U)U.style.display='';if(FT)FT.innerHTML=rm?`Live results from ${L('Fox News',LV.src)} (Fox News Decision Desk). A race is marked WINNER only after the source calls it. Vote counts are unofficial until certified by each state. Not used: CNN, MSN, MSNBC.`:FT0};
 if(resultsMode())liveStart();
 setInterval(()=>{if(!timer&&resultsMode()&&D){liveStart();route()}},30e3);

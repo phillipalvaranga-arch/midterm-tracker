@@ -56,3 +56,9 @@ nav.bottom{display:none}
 .ovg.one{grid-template-columns:1fr}
 .chips{display:flex;flex-wrap:wrap;gap:6px}.chip{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--l);border-radius:99px;color:var(--f);text-decoration:none;font-size:14px;background:#1d2433}
 a.pres-teaser{display:block;text-decoration:none;color:inherit;border-color:var(--a);margin:12px 0}a.pres-teaser h2{margin:0 0 6px}a.pres-teaser:hover{border-color:#9cc0ff}
+.opts{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin:14px 0 24px}
+a.opt{display:flex;align-items:flex-start;gap:12px;background:var(--c);border:1px solid var(--l);border-radius:16px;padding:16px;color:var(--f);text-decoration:none;min-height:88px}
+a.opt:hover,a.opt:focus{border-color:var(--a);outline:none}
+.opt-ic{font-size:28px;line-height:1;width:36px;text-align:center;flex:none}
+.opt-txt{display:flex;flex-direction:column;gap:2px}.opt-txt b{font-size:20px}
+.back{margin:0 0 10px}.back a{font-weight:700;text-decoration:none}
